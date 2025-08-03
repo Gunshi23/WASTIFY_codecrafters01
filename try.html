@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAQ Section</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .faq {
+      background-color: #fff;
+      padding: 60px 20px;
+      max-width: 800px;
+      margin: 40px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .faq-question h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .faq-question span {
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+      padding-right: 20px;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: 10px;
+    }
+
+    .faq-item.active .faq-question span {
+      transform: rotate(45deg);
+    }
+  </style>
+</head>
+<body>
+
+  <section id="faq" class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>What is Trash to Treasure?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Trash to Treasure is an innovative online marketplace dedicated to connecting people who create unique products from recycled materials with conscious consumers looking for sustainable alternatives.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>How do I join?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Click "Join the Movement", fill out a quick form, and you can start browsing or listing upcycled creations. Basic membership is free!
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Can I sell my own upcycled products?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Absolutely! Create a seller profile, upload product details, set prices, and connect with buyers.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>How does shipping work?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Sellers set shipping options. We encourage eco-friendly and local pickup methods to reduce the carbon footprint.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Do you offer upcycling workshops?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Yes! We regularly host online and in-person workshops. Check the Events section for updates.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    faqItems.forEach(item => {
+      const question = item.querySelector('.faq-question');
+
+      question.addEventListener('click', () => {
+        item.classList.toggle('active');
+        const icon = item.querySelector('span');
+        icon.textContent = item.classList.contains('active') ? '×' : '+';
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Image Upload</title>
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@1.0.3/dist/index.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        #imageInput {
+            margin-bottom: 10px;
+        }
+        #results {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Image to Gemini</h1>
+        <input type="file" id="imageInput" accept="image/*">
+        <button id="submitButton">Tell me about the image</button>
+        <div id="results">
+            <h2>Response:</h2>
+            <p id="responseText"></p>
+        </div>
+    </div>
+
+    <script>
+        const genAI = new window.GoogleGenerativeAI("AIzaSyBdCANz8kiQgLqqk8x6fWAE1Pw7EIPO5tc"); // Replace with your API key
+        const model = genAI.getModel({ model: "gemini-2.0-flash" }); // Or use "gemini-pro" if appropriate
+
+        const imageInput = document.getElementById('imageInput');
+        const submitButton = document.getElementById('submitButton');
+        const responseText = document.getElementById('responseText');
+        const resultsDiv = document.getElementById('results');
+
+        submitButton.addEventListener('click', async () => {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert("Please select an image file.");
+                return;
+            }
+
+            resultsDiv.style.display = "block";
+            responseText.innerText = "Loading..."; // Show loading message
+
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const base64Data = event.target.result.split(',')[1];
+                const mimeType = file.type;
+
+                try {
+                    const response = await model.generateContent({
+                        contents: [
+                            {
+                                role: "user",
+                                parts: [
+                                    { text: "Tell me about this image" },
+                                    {
+                                        inlineData: {
+                                            data: base64Data,
+                                            mimeType: mimeType,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    });
+
+
+                    const text = response.response.text();
+                    responseText.innerText = text;
+                } catch (error) {
+                    console.error("Error:", error);
+                    responseText.innerText = `Error: ${error.message}`;
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+</body>
+</html>

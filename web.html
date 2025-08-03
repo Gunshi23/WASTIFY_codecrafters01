@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASTIFY CAMERA</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color:#EFE3C2;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 640px;
+        }
+
+        video, canvas {
+            border: 1px solid black;
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            aspect-ratio: 4/3;
+            margin-bottom: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 640px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .controls {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        button {
+            margin: 5px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #367c39;
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        #imageInput {
+            margin: 15px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+        
+        #responseText {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.3);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .camera-feedback {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            display: none;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container, .main-content {
+                width: 95%;
+            }
+            
+            button {
+                padding: 10px 16px;
+                font-size: 14px;
+                width: 45%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h2>Webcam Image Capture</h2>
+        <div id="cameraFeedback" class="camera-feedback">Image Captured!</div>
+        <video id="webcam" autoplay playsinline></video>
+        
+        <div class="controls">
+            <button id="captureBtn" aria-label="Capture image from webcam">Capture</button>
+            <button id="downloadBtn" aria-label="Download captured image">Download</button>
+            <button id="cameraSelectBtn" aria-label="Select camera">Change Camera</button>
+        </div>
+        
+        <canvas id="snapshot"></canvas>
+
+        <div class="container">
+            <h1>Analyze Image with Gemini</h1>
+            <div id="errorMessage" class="error-message"></div>
+            
+            <div class="controls">
+                <input type="file" id="imageInput" accept="image/*" aria-label="Upload image for analysis">
+                <button id="submitButton" aria-label="Analyze uploaded image">Analyze Uploaded Image</button>
+                <button id="useSnapshotBtn" aria-label="Analyze captured image">Analyze Snapshot</button>
+            </div>
+            
+            <div id="results">
+                <h2>Response:</h2>
+                <div id="responseText"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Google's Generative AI Library -->
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+        
+        // Make it available globally
+        window.GoogleGenerativeAI = GoogleGenerativeAI;
+        
+        // Once the library is loaded, initialize the app
+        document.addEventListener('DOMContentLoaded', initApp);
+        
+        // Configuration
+        const API_KEY = "AIzaSyBdCANz8kiQgLqqk8x6fWAE1Pw7EIPO5tc"; // Your Gemini API key
+        const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4MB max size
+        // Updated model name - changed from gemini-pro-vision to gemini-1.5-flash
+        const MODEL_NAME = "gemini-1.5-flash";
+        
+        // DOM Elements
+        const webcam = document.getElementById('webcam');
+        const canvas = document.getElementById('snapshot');
+        const context = canvas.getContext('2d');
+        const captureBtn = document.getElementById('captureBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const cameraSelectBtn = document.getElementById('cameraSelectBtn');
+        const useSnapshotBtn = document.getElementById('useSnapshotBtn');
+        const imageInput = document.getElementById('imageInput');
+        const submitButton = document.getElementById('submitButton');
+        const responseText = document.getElementById('responseText');
+        const resultsDiv = document.getElementById('results');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const cameraFeedback = document.getElementById('cameraFeedback');
+        
+        // State variables
+        let hasSnapshot = false;
+        let mediaStream = null;
+        let isProcessing = false;
+        
+        // Set canvas dimensions based on video
+        function setCanvasDimensions() {
+            canvas.width = webcam.videoWidth || 640;
+            canvas.height = webcam.videoHeight || 480;
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.style.display = 'block';
+            setTimeout(() => {
+                errorMessageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Show feedback
+        function showFeedback(message) {
+            cameraFeedback.textContent = message;
+            cameraFeedback.style.display = 'block';
+            setTimeout(() => {
+                cameraFeedback.style.display = 'none';
+            }, 1500);
+        }
+
+        // Access the device webcam
+        async function setupWebcam(deviceId = null) {
+            try {
+                // Stop any existing stream
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                }
+                
+                // Set constraints based on deviceId
+                const constraints = {
+                    video: deviceId ? { deviceId: { exact: deviceId } } : true
+                };
+                
+                mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+                webcam.srcObject = mediaStream;
+                
+                // Wait for video to be ready
+                webcam.onloadedmetadata = () => {
+                    webcam.play();
+                    setCanvasDimensions();
+                };
+                
+                // Enable buttons after webcam is ready
+                webcam.oncanplay = () => {
+                    captureBtn.disabled = false;
+                    cameraSelectBtn.disabled = false;
+                };
+            } catch (err) {
+                console.error("Webcam error:", err);
+                showError(`Error accessing webcam: ${err.message}. Please check camera permissions.`);
+                captureBtn.disabled = true;
+                useSnapshotBtn.disabled = true;
+            }
+        }
+
+        // Select camera
+        async function selectCamera() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                
+                if (videoDevices.length === 0) {
+                    showError("No camera devices found");
+                    return;
+                }
+                
+                if (videoDevices.length === 1) {
+                    showFeedback("Only one camera available");
+                    return;
+                }
+                
+                // Find current device id
+                const currentTrack = mediaStream?.getVideoTracks()[0];
+                const currentDeviceId = currentTrack?.getSettings().deviceId;
+                
+                // Find next device
+                let nextDeviceIndex = 0;
+                if (currentDeviceId) {
+                    const currentIndex = videoDevices.findIndex(d => d.deviceId === currentDeviceId);
+                    nextDeviceIndex = (currentIndex + 1) % videoDevices.length;
+                }
+                
+                // Setup webcam with new device
+                await setupWebcam(videoDevices[nextDeviceIndex].deviceId);
+                showFeedback(`Switched to: ${videoDevices[nextDeviceIndex].label || 'Camera ' + (nextDeviceIndex + 1)}`);
+            } catch (err) {
+                console.error("Error selecting camera:", err);
+                showError("Failed to switch camera");
+            }
+        }
+
+        // Capture the current frame from the video
+        function captureImage() {
+            if (!mediaStream || mediaStream.getVideoTracks().length === 0) {
+                showError("Camera not available. Please check permissions.");
+                return;
+            }
+            
+            setCanvasDimensions();
+            context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+            hasSnapshot = true;
+            showFeedback("Image Captured!");
+            useSnapshotBtn.disabled = false;
+            downloadBtn.disabled = false;
+        }
+
+        // Download the image as a PNG file
+        function downloadImage() {
+            if (!hasSnapshot) {
+                showError("Please capture an image first");
+                return;
+            }
+            
+            try {
+                const link = document.createElement('a');
+                link.download = `wastify_image_${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error("Download error:", err);
+                showError("Failed to download image");
+            }
+        }
+
+        // Convert canvas to File object
+        function canvasToFile(canvas) {
+            return new Promise((resolve, reject) => {
+                try {
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error("Failed to create image blob"));
+                            return;
+                        }
+                        const file = new File([blob], "snapshot.png", { type: "image/png" });
+                        resolve(file);
+                    }, 'image/png', 0.9); // 0.9 quality for better performance
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+        
+        // Resize image if needed
+        async function resizeImageIfNeeded(file) {
+            if (file.size <= MAX_IMAGE_SIZE) {
+                return file;
+            }
+            
+            return new Promise((resolve, reject) => {
+                try {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Create a canvas to resize the image
+                        const tempCanvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // Calculate new dimensions while maintaining aspect ratio
+                        const aspectRatio = width / height;
+                        
+                        // Start with 80% size and decrease until we're under max size
+                        let scale = 0.8;
+                        
+                        tempCanvas.width = width * scale;
+                        tempCanvas.height = height * scale;
+                        
+                        const tempContext = tempCanvas.getContext('2d');
+                        tempContext.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
+                        
+                        tempCanvas.toBlob((blob) => {
+                            if (!blob) {
+                                reject(new Error("Failed to resize image"));
+                                return;
+                            }
+                            const resizedFile = new File([blob], file.name, { type: "image/jpeg" });
+                            console.log(`Resized image from ${file.size} to ${resizedFile.size} bytes`);
+                            resolve(resizedFile);
+                        }, 'image/jpeg', 0.85);
+                    };
+                    
+                    img.onerror = () => {
+                        reject(new Error("Failed to load image for resizing"));
+                    };
+                    
+                    img.src = URL.createObjectURL(file);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        // Convert file to Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = (error) => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Process image with Gemini
+        async function processImage(file) {
+            if (isProcessing) {
+                showError("Already processing an image. Please wait.");
+                return;
+            }
+            
+            if (!file) {
+                showError("No image selected");
+                return;
+            }
+            
+            if (!API_KEY || API_KEY === "YOUR_API_KEY") {
+                showError("Please set your Gemini API key in the code");
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                showError("Please select a valid image file");
+                return;
+            }
+            
+            try {
+                isProcessing = true;
+                submitButton.disabled = true;
+                useSnapshotBtn.disabled = true;
+                
+                // Show results area with loading indicator
+                resultsDiv.style.display = "block";
+                responseText.innerHTML = '<div class="loading"></div> Analyzing image...';
+                
+                // Resize image if too large
+                const processedFile = await resizeImageIfNeeded(file);
+                
+                // Check if the Gemini API is available
+                if (!window.GoogleGenerativeAI) {
+                    throw new Error("Google Generative AI library not loaded. Please refresh the page and try again.");
+                }
+                
+                // Initialize the Gemini API
+                console.log("Initializing Gemini API...");
+                const genAI = new window.GoogleGenerativeAI(API_KEY);
+                
+                // Use the updated model - gemini-1.5-flash instead of gemini-pro-vision
+                const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+                
+                // Convert image to base64
+                const base64Image = await fileToBase64(processedFile);
+                
+                // Create the image part for the API
+                const imagePart = {
+                    inlineData: {
+                        data: base64Image,
+                        mimeType: processedFile.type
+                    }
+                };
+                
+                console.log("Sending request to Gemini API...");
+                
+                // The prompt to send to Gemini
+                const prompt = "Analyze this image in detail. Identify any waste materials, recyclables, or environmental issues visible in the image. Provide suggestions for proper disposal if applicable.";
+                
+                // Generate content using the correct format for the updated model
+                const result = await model.generateContent({
+                    contents: [{
+                        parts: [
+                            { text: prompt },
+                            imagePart
+                        ]
+                    }]
+                });
+                
+                console.log("Received response:", result);
+                
+                // Get the response text
+                let responseTextContent;
+                if (result && result.response) {
+                    responseTextContent = typeof result.response.text === 'function' 
+                        ? result.response.text() 
+                        : result.response.text;
+                } else {
+                    responseTextContent = "Received empty response from API";
+                }
+                
+                // Update the UI with the response
+                responseText.textContent = responseTextContent;
+                
+            } catch (error) {
+                console.error("Error with Gemini API:", error);
+                responseText.textContent = `Error: ${error.message || "Failed to analyze image"}`;
+            } finally {
+                isProcessing = false;
+                submitButton.disabled = false;
+                
+                // Re-enable snapshot button only if we have a snapshot
+                if (hasSnapshot) {
+                    useSnapshotBtn.disabled = false;
+                }
+            }
+        }
+
+        // Initialize application
+        function initApp() {
+            console.log("Initializing Wastify Camera app...");
+            
+            // Set initial button states
+            downloadBtn.disabled = true;
+            useSnapshotBtn.disabled = true;
+            captureBtn.disabled = true;
+            
+            // Initialize webcam on page load
+            setupWebcam();
+            
+            // Set up event listeners
+            captureBtn.addEventListener('click', captureImage);
+            downloadBtn.addEventListener('click', downloadImage);
+            cameraSelectBtn.addEventListener('click', selectCamera);
+            
+            useSnapshotBtn.addEventListener('click', async () => {
+                if (!hasSnapshot) {
+                    showError("Please capture an image first");
+                    return;
+                }
+                try {
+                    const file = await canvasToFile(canvas);
+                    processImage(file);
+                } catch (err) {
+                    console.error("Error processing snapshot:", err);
+                    showError("Failed to process snapshot");
+                }
+            });
+            
+            submitButton.addEventListener('click', () => {
+                const file = imageInput.files[0];
+                if (!file) {
+                    showError("Please select an image file");
+                    return;
+                }
+                processImage(file);
+            });
+            
+            // Set up file input change event
+            imageInput.addEventListener('change', () => {
+                const file = imageInput.files[0];
+                if (file) {
+                    // Enable submit button when file is selected
+                    submitButton.disabled = false;
+                }
+            });
+            
+            // Handle window resize to adjust canvas
+            window.addEventListener('resize', () => {
+                if (hasSnapshot) {
+                    // Save the current image data
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    setCanvasDimensions();
+                    // Restore the image data after resize
+                    context.putImageData(imageData, 0, 0);
+                }
+            });
+            
+            console.log("App initialization complete");
+        }
+    </script>
+</body>
+</html>

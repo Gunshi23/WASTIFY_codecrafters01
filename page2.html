@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Transform waste into value — join our sustainable marketplace!" />
+  <title>Trash to Treasure</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="page.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <img src="logofinal.png" alt="Trash to Treasure Logo" class="logo">
+    <div class="hamburger" id="hamburger">☰</div>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <section id="hero-ai" class="hero-ai-section fade">
+    <div class="heroheading">
+      <h1 class="maintext">Transform Waste Into Wealth</h1>
+      <p class="subtext">Join our sustainable marketplace and turn discarded items into valuable treasures.</p>
+    </div>
+  
+    <div class="hero-ai-content">
+      <div class="text-section">
+        <h3>AI Waste Management Assistant</h3>
+        <p>Use our AI to analyze waste items and get instant upcycling ideas.</p>
+        <ul class="ai-features">
+          <li><span>✓</span> Material identification</li>
+          <li><span>✓</span> Custom upcycling suggestions</li>
+          <li><span>✓</span> Step-by-step guides</li>
+          <li><span>✓</span> Market value estimate</li>
+          <li><span>✓</span> Environmental impact insights</li>
+        </ul>
+      </div>
+  
+      <div class="ai-demo-section">
+        <div class="webcam-container">
+          <video id="webcam" autoplay playsinline width="400" height="300"></video>
+          <canvas id="canvas" width="400" height="300" style="display: none;"></canvas>
+          <div class="webcam-overlay">
+            <div class="camera-icons">
+              <button id="capture-btn" onclick="window.location.href='web.html' ">📸 Capture</button>
+              <button id="switch-camera" disabled>🔄 Switch Camera</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="how-it-works fade">
+    <div class="container">
+      <h2>How It Works</h2>
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-icon">1</div>
+          <h3>Identify Your Waste</h3>
+          <p>Take a photo of your waste item using our AI Tool or browse our categories to find the type of waste you have.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">2</div>
+          <h3>Get Upcycling Ideas</h3>
+          <p>Our AI will suggest creative ways to transform your waste into valuable items, or browse our marketplace for inspiration.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">3</div>
+          <h3>Create & Share</h3>
+          <p>Follow our guides to upcycle your waste or connect with artisans who can transform it for you.</p>
+        </div>
+        <div class="step">
+          <div class="step-icon">4</div>
+          <h3>Buy, Sell or Trade</h3>
+          <p>List your upcycled creations on our marketplace or find unique treasures made by our community members.</p>
+        </div>
+      </div>
+      <div class="cta-button">
+        <a href="buy.html" class="btn">Get Started Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section fade">
+    <h2>Why Choose Us?</h2>
+    <div class="features">
+      <div class="feature" style="animation-delay: 0.2s;">
+        <i>♻️</i>
+        <h3>Sustainable Solutions</h3>
+        <p>Reduce landfill waste and promote circular economy with our platform.</p>
+      </div>
+      <div class="feature" style="animation-delay: 0.4s;">
+        <i>💰</i>
+        <h3>Extra Income</h3>
+        <p>Turn your creative upcycling projects into a profitable side business.</p>
+      </div>
+      <div class="feature" style="animation-delay: 0.6s;">
+        <i>🌱</i>
+        <h3>Eco-Friendly</h3>
+        <p>Every transaction on our platform helps reduce environmental impact.</p>
+      </div>
+      <div class="feature" style="animation-delay: 0.8s;">
+        <i>🤝</i>
+        <h3>Community</h3>
+        <p>Connect with like-minded individuals passionate about sustainability.</p>
+      </div>
+      <div class="feature" style="animation-delay: 1s;">
+        <i>🔄</i>
+        <h3>Easy Exchange</h3>
+        <p>Our platform makes buying, selling and trading upcycled goods simple.</p>
+      </div>
+      <div class="feature" style="animation-delay: 1.2s;">
+        <i>📱</i>
+        <h3>Mobile Ready</h3>
+        <p>Access our marketplace anytime, anywhere on any device.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA Section -->
+  <section id="cta" class="cta fade">
+    <h2>Be the Change</h2>
+    <p>Start trading upcycled goods now and make a real environmental impact while earning extra income.</p>
+    <button>Join the Movement</button>
+  </section>
+
+ 
+  <!-- Search Section -->
+  <section id="search" class="search-section fade">
+    <h2>Discover Unique Products</h2>
+    <div class="search-container">
+      <input type="text" placeholder="Search for upcycled products...">
+      <button>Find Treasures</button>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>What is Trash to Treasure?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Trash to Treasure is an innovative online marketplace dedicated to connecting people who create unique products from recycled materials with conscious consumers looking for sustainable alternatives.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>How do I join?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Click "Join the Movement", fill out a quick form, and you can start browsing or listing upcycled creations. Basic membership is free!
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Can I sell my own upcycled products?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Absolutely! Create a seller profile, upload product details, set prices, and connect with buyers.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>How does shipping work?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Sellers set shipping options. We encourage eco-friendly and local pickup methods to reduce the carbon footprint.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question">
+          <h3>Do you offer upcycling workshops?</h3>
+          <span>+</span>
+        </div>
+        <div class="faq-answer">
+          Yes! We regularly host online and in-person workshops. Check the Events section for updates.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">
+        <h3>Wastify</h3>
+        <p>Transforming waste into wealth through creativity and sustainability.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Upcycling Guide</a></li>
+            <li><a href="#">DIY Projects</a></li>
+            <li><a href="#">Sustainability Tips</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">support@trash2treasure.com</a></li>
+            <li><a href="#">(555) 123-4567</a></li>
+            <li><a href="#">123 Green Street</a></li>
+            <li><a href="#">Portland, OR 97201</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; Wastify. All rights reserved.</p>
+    </div>
+  <script>
+    const faqItems = document.querySelectorAll('.faq-item');
+    document.querySelectorAll('.faq-question').forEach(question => {
+  question.addEventListener('click', () => {
+    const parent = question.parentElement;
+
+    // Close all other items
+    document.querySelectorAll('.faq-item.active').forEach(item => {
+      if (item !== parent) {
+        item.classList.remove('active');
+        item.querySelector('span').textContent = '+';
+      }
+    });
+
+    // Toggle this item
+    const isActive = parent.classList.toggle('active');
+    question.querySelector('span').textContent = isActive ? '×' : '+';
+  });
+});
+
+
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navList = document.getElementById('nav-list');
+
+    hamburger.addEventListener('click', () => {
+      navList.classList.toggle('show');
+    });
+
+    // Close menu when link is clicked
+    document.querySelectorAll('#nav-list a').forEach(link => {
+      link.addEventListener('click', () => {
+        navList.classList.remove('show');
+      });
+    });
+
+    // FAQ toggle
+    // Scroll animation trigger
+    const fadeElements = document.querySelectorAll('.fade');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = '0.2s';
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    fadeElements.forEach(el => observer.observe(el));
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Add animation delays to features and team members
+    document.querySelectorAll('.feature, .team-member, .step').forEach((el, index) => {
+      el.style.animationDelay = `${0.2 * (index + 1)}s`;
+    });
+
+    // AI Webcam functionality
+    const startCameraButton = document.getElementById('start-camera');
+    const captureButton = document.getElementById('capture-btn');
+    const switchCameraButton = document.getElementById('switch-camera');
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const analysisResults = document.getElementById('analysis-results');
+    const loadingResults = document.getElementById('loading-results');
+
+    let currentStream = null;
+    let facingMode = 'environment'; // Start with back camera
+
+    // Start the webcam
+    startCameraButton.addEventListener('click', async () => {
+      try {
+        const constraints = {
+          video: { facingMode: facingMode }
+        };
+        
+        if (currentStream) {
+          currentStream.getTracks().forEach(track => {
+            track.stop();
+          });
+        }
+        
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        webcamElement.srcObject = stream;
+        currentStream = stream;
+        
+        captureButton.disabled = false;
+        switchCameraButton.disabled = false;
+        startCameraButton.textContent = 'Restart Camera';
+        
+        analysisResults.innerHTML = '<p>Camera is active. Take a photo of your waste item.</p>';
+      } catch (err) {
+        console.error('Error accessing the camera: ', err);
+        analysisResults.innerHTML = `<p>Error accessing the camera: ${err.message}</p>`;
+      }
+    });
+
+    // Switch between front and back cameras
+    switchCameraButton.addEventListener('click', () => {
+      facingMode = facingMode === 'user' ? 'environment' : 'user';
+      startCameraButton.click(); // Restart the camera with new facing mode
+    });
+
+    // Capture an image
+    captureButton.addEventListener('click', () => {
+      // Draw the current video frame to the canvas
+      const context = canvasElement.getContext('2d');
+      context.drawImage(webcamElement, 0, 0, canvasElement.width, canvasElement.height);
+      
+      // Show loading state
+      loadingResults.style.display = 'block';
+      analysisResults.style.display = 'none';
+      
+      // Simulate AI processing (would be replaced with actual API call)
+      setTimeout(() => {
+        // Hide loading state
+        loadingResults.style.display = 'none';
+        analysisResults.style.display = 'block';
+        
+        // Generate a mock AI response
+        const wasteTypes = [
+          {
+            type: 'Plastic Bottle',
+            solutions: [
+              'Create a self-watering planter',
+              'Make a bird feeder',
+              'Use as a storage container',
+              'Cut into decorative flower patterns'
+            ],
+            environmentalImpact: 'Recycling one plastic bottle saves enough energy to power a 60W light bulb for 6 hours.'
+          },
+          {
+            type: 'Glass Jar',
+            solutions: [
+              'Transform into a terrarium',
+              'Create a decorative candle holder',
+              'Use as storage for dry goods',
+              'Make a string light lamp'
+            ],
+            environmentalImpact: 'Glass can be recycled endlessly without loss in quality or purity.'
+          },
+          {
+            type: 'Cardboard Box',
+            solutions: [
+              'Build a cat playhouse',
+              'Create wall art or decorations',
+              'Make drawer dividers',
+              'Use as gardening containers'
+            ],
+            environmentalImpact: 'Recycling one ton of cardboard saves 9 cubic yards of landfill space.'
+          },
+          {
+            type: 'Old T-Shirt',
+            solutions: [
+              'Make a tote bag',
+              'Create cleaning rags',
+              'Make a pet toy',
+              'Weave into a rug'
+            ],
+            environmentalImpact: 'The fashion industry produces 10% of global carbon emissions, reusing textiles reduces this impact.'
+          }
+        ];
+        
+        // Randomly select a waste type for the demo
+        const wasteItem = wasteTypes[Math.floor(Math.random() * wasteTypes.length)];
+        
+        // Display the results
+        <div class="ai-result">
+  <h4>Identified Item: <span style="color: #00ffcc">${wasteItem.type}</span></h4>
+  <p><strong>Upcycling Ideas:</strong></p>
+  <ul style="list-style: inside; margin-left: 20px; margin-bottom: 15px;">
+    ${wasteItem.solutions.map(solution => `<li>${solution}</li>`).join('')}
+  </ul>
+  <p><strong>Environmental Impact:</strong> ${wasteItem.environmentalImpact}</p>
+  <p><strong>Estimated Market Value:</strong> $5-15 depending on craftsmanship</p>
+  
+  <!-- Adding a link to a detailed guide page -->
+  <div style="margin-top: 15px; text-align: center;">
+    <a href="detailed-guide.html" style="text-decoration: none;">
+      <button style="background: #00ffcc; color: #121212; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600;">
+        View Detailed Guide
+      </button>
+    </a>
+  </div>
+</div>
+</head>
+</html>
